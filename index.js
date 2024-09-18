@@ -23,10 +23,8 @@ const start = async function () {
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
-      "https://nicfit.vercel.app",
+      "https://checkpoint-sig.vercel.app",
       "http://localhost:5173",
-      // "http://nicfit.my.id",
-      // "https://nicfit.my.id", // Tambahkan juga versi HTTPS jika ada
     ];
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);

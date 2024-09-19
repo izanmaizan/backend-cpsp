@@ -23,7 +23,7 @@ const start = async function () {
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
-      "https://checkpoint-sig.vercel.app",
+      "http://193.203.162.80",
       "http://localhost:5173",
     ];
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {

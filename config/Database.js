@@ -6,7 +6,7 @@ dotenv.config();
 // ini untuk yang pakai server public
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || "srv602949.hstgr.cloud",
+  host: process.env.DB_HOST || "127.0.0.1",
   port: process.env.DB_PORT || 3306,  // Port default MySQL
   user: process.env.DB_USERNAME || "u232856820_cpsp",
   password: process.env.DB_PASSWORD || "your_password",  // Ganti dengan password yang sesuai

@@ -7,7 +7,7 @@ dotenv.config();
 const pool = mysql.createPool({
   host:
     process.env.DB_HOST ||
-    "checkpoint-sig.site",
+    "srv602949.hstgr.cloud",
   user: process.env.DB_USERNAME || "u232856820_cpsp",
   password: process.env.DB_PASSWORD || "gPAE|T5m",
   database: process.env.DB_NAME || "u232856820_checkpoint",

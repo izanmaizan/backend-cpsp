@@ -7,10 +7,10 @@ dotenv.config();
 const pool = mysql.createPool({
   host:
     process.env.DB_HOST ||
-    "brk7dpfgqm7x7ujz1hsv-mysql.services.clever-cloud.com",
-  user: process.env.DB_USERNAME || "uspwwr1unmdz8fzi",
-  password: process.env.DB_PASSWORD || "czUj5TUvc5Mm0wywa6xC",
-  database: process.env.DB_NAME || "brk7dpfgqm7x7ujz1hsv",
+    "id-dci-web1417.main-hosting.eu",
+  user: process.env.DB_USERNAME || "u232856820_cpsp",
+  password: process.env.DB_PASSWORD || "gPAE|T5m",
+  database: process.env.DB_NAME || "u232856820_checkpoint",
 });
 
 // ini untuk yang pakai server local

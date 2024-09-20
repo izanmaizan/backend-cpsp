@@ -23,12 +23,12 @@ export const Register = async (req, res) => {
 
   try {
     if (password !== confirmPassword) {
-      return res.status(400).json({ msg: "Passwords do not match!" });
+      return res.status(400).json({ msg: "Password tidak sama!" });
     }
 
     const user = await User.findOne({ key: "username", value: username });
     if (user) {
-      return res.status(400).json({ msg: "Username already exists!" });
+      return res.status(400).json({ msg: "Username sudah ada!" });
     }
 
     const salt = await bcrypt.genSalt();
@@ -38,10 +38,10 @@ export const Register = async (req, res) => {
       username,
       password: hashPassword,
       name,
-      role: role || "user", // Default to "user" if not provided
+      role: role || "petugas", // Default to "user" if not provided
     });
 
-    res.json({ msg: "Registration Successful" });
+    res.json({ msg: "Berhasil mendaftar" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ msg: "Internal server error" });

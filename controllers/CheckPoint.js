@@ -6,7 +6,7 @@ import CheckPoint from "../models/CheckPointModel.js";
 // Konfigurasi multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./uploads");
+    cb(null, "./uploads/");
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + uuidv4();
@@ -16,7 +16,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
 
 export const createCheckPoint = async (req, res) => {
   upload.array("dokumentasi")(req, res, async (err) => {
@@ -32,6 +31,12 @@ export const createCheckPoint = async (req, res) => {
       tanggal,
       jam,
       keterangan,
+      geofence_data,
+      alamat,
+      nama_pengemudi,
+      no_truck,
+      distributor,
+      ekspeditur,
     } = req.body;
     const dokumentasi = req.files ? req.files.map((file) => file.path) : [];
 
@@ -62,6 +67,12 @@ export const createCheckPoint = async (req, res) => {
         jam,
         dokumentasi: dokumentasi.join(", "),
         keterangan,
+        geofence_data,
+        alamat,
+        nama_pengemudi,
+        no_truck,
+        distributor,
+        ekspeditur,
       });
 
       res
@@ -101,8 +112,18 @@ export const getCheckPoint = async (req, res) => {
 
 export const updateCheckPoint = async (req, res) => {
   const { no_do } = req.params;
-  const { nama_petugas, titik_lokasi, tanggal, jam, keterangan } = req.body;
-  const dokumentasi = req.files ? req.files.path : null;
+  const {
+    nama_petugas,
+    titik_lokasi,
+    tanggal,
+    jam,
+    keterangan,
+    nama_pengemudi,
+    no_truck,
+    distributor,
+    ekspeditur,
+  } = req.body;
+  const dokumentasi = req.file ? req.file.path : null;
 
   // Pastikan nama_petugas adalah array dan gabungkan menjadi string
   const petugasList = Array.isArray(nama_petugas)
@@ -122,6 +143,10 @@ export const updateCheckPoint = async (req, res) => {
       jam,
       dokumentasi,
       keterangan,
+      nama_pengemudi,
+      no_truck,
+      distributor,
+      ekspeditur,
     });
 
     if (updatedRows === 0) {
@@ -166,55 +191,3 @@ export const searchPetugas = async (req, res) => {
     res.status(500).json({ msg: "Internal server error" });
   }
 };
-
-
-
-// export const createCheckPoint = async (req, res) => {
-//   upload.array("dokumentasi")(req, res, async (err) => {
-//     if (err) {
-//       return res.status(400).json({ msg: "Error uploading files" });
-//     }
-
-//     const { nama_petugas, titik_lokasi, no_do, tanggal, jam, keterangan } =
-//       req.body;
-
-//     const dokumentasi = req.files ? req.files.map((file) => file.path) : [];
-
-//     console.log("Received titik_lokasi:", titik_lokasi); // Tambahkan log ini
-
-//     try {
-//       const checkPointExists = await CheckPoint.findOne({
-//         key: "no_do",
-//         value: no_do,
-//       });
-
-//       if (checkPointExists) {
-//         return res
-//           .status(409)
-//           .json({ msg: "Checkpoint with this no_do number already exists" });
-//       }
-
-//       // Pastikan nama_petugas adalah string yang dipisahkan koma
-//       const petugasString = Array.isArray(nama_petugas)
-//         ? nama_petugas.join(", ")
-//         : nama_petugas;
-
-//       const newCheckPointId = await CheckPoint.create({
-//         nama_petugas: petugasString,
-//         titik_lokasi,
-//         no_do,
-//         tanggal,
-//         jam,
-//         dokumentasi: dokumentasi.join(", "),
-//         keterangan,
-//       });
-
-//       res
-//         .status(201)
-//         .json({ msg: "Checkpoint created successfully", id: newCheckPointId });
-//     } catch (error) {
-//       console.error("Error creating checkpoint:", error);
-//       res.status(500).json({ msg: "Internal server error" });
-//     }
-//   });
-// };

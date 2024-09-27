@@ -18,6 +18,10 @@ export const getLaporan = async () => {
     cp.nama_petugas AS petugas,
     l.lokasi AS lokasi,
     cp.no_do,
+    cp.no_truck,
+    cp.nama_pengemudi,
+    cp.distributor,
+    cp.ekspeditur,
     cp.tanggal,
     cp.jam
 FROM check_points cp

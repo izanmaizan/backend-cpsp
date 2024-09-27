@@ -2,35 +2,26 @@
 import db from "../config/Database.js";
 
 class CheckPoint {
-  // static async create(data) {
-  //   const sql =
-  //     "INSERT INTO check_points (no_do, nama_petugas, titik_lokasi, tanggal, jam, dokumentasi, keterangan) VALUES (?, ?, ?, ?, ?, ?, ?)";
-  //   const [result] = await db.execute(sql, [
-  //     data.no_do || null,
-  //     data.nama_petugas || null,
-  //     data.titik_lokasi || null,
-  //     data.tanggal || null,
-  //     data.jam || null,
-  //     data.dokumentasi || null,
-  //     data.keterangan || null,
-  //   ]);
-  //   return result.insertId;
-  // }
-
   static async create(data) {
     const sql = `
-      INSERT INTO check_points (no_do, nama_petugas, no_hp, titik_lokasi, tanggal, jam, dokumentasi, keterangan) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO check_points (no_do, nama_petugas, no_hp, titik_lokasi, tanggal, jam, dokumentasi, keterangan, geofence_data, alamat, nama_pengemudi, no_truck, distributor, ekspeditur) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const [result] = await db.execute(sql, [
       data.no_do || null,
       data.nama_petugas || null,
-      data.no_hp || null, // Tambahkan no_hp
+      data.no_hp || null,
       data.titik_lokasi || null,
       data.tanggal || null,
       data.jam || null,
       data.dokumentasi || null,
       data.keterangan || null,
+      data.geofence_data || null,
+      data.alamat || null,
+      data.nama_pengemudi || null,
+      data.no_truck || null,
+      data.distributor || null,
+      data.ekspeditur || null,
     ]);
     return result.insertId;
   }
@@ -55,8 +46,20 @@ class CheckPoint {
   }
 
   static async update(no_do, data) {
-    const sql =
-      "UPDATE check_points SET nama_petugas = ?, titik_lokasi = ?, tanggal = ?, jam = ?, dokumentasi = ?, keterangan = ? WHERE no_do = ?";
+    const sql = `
+      UPDATE check_points SET 
+        nama_petugas = ?, 
+        titik_lokasi = ?, 
+        tanggal = ?, 
+        jam = ?, 
+        dokumentasi = ?, 
+        keterangan = ?, 
+        nama_pengemudi = ?,
+        no_truck = ?,
+        distributor = ?,
+        ekspeditur = ?,
+      WHERE no_do = ?
+    `;
     const [result] = await db.execute(sql, [
       data.nama_petugas || null,
       data.titik_lokasi || null,
@@ -64,6 +67,10 @@ class CheckPoint {
       data.jam || null,
       data.dokumentasi || null,
       data.keterangan || null,
+      data.nama_pengemudi || null,
+      data.no_truck || null,
+      data.distributor || null,
+      data.ekspeditur || null,
       no_do,
     ]);
     return result.affectedRows;

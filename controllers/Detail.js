@@ -34,13 +34,34 @@ export const getDetail = async (req, res) => {
 // Function to update detail data
 export const updateDetail = async (req, res) => {
   const no_do = req.params.no_do;
-  const { nama_petugas, titik_lokasi, tanggal, jam, keterangan } = req.body; // Gunakan titik_lokasi untuk update
+  const {
+    nama_petugas,
+    titik_lokasi,
+    tanggal,
+    jam,
+    keterangan,
+    nama_pengemudi,
+    no_truck,
+    distributor,
+    ekspeditur,
+  } = req.body; // Gunakan titik_lokasi untuk update
 
   try {
     const [result] = await db.execute(
-      "UPDATE check_points SET nama_petugas = ?, titik_lokasi = ?, tanggal = ?, jam = ?, keterangan = ? " +
+      "UPDATE check_points SET nama_petugas = ?, titik_lokasi = ?, tanggal = ?, jam = ?, keterangan = ?, nama_petugas = ?, no_truck = ?, distributor = ?, ekspeditur = ? " +
         "WHERE no_do = ?",
-      [nama_petugas, titik_lokasi, tanggal, jam, keterangan, no_do]
+      [
+        nama_petugas,
+        titik_lokasi,
+        tanggal,
+        jam,
+        keterangan,
+        nama_pengemudi,
+        no_truck,
+        distributor,
+        ekspeditur,
+        no_do,
+      ]
     );
 
     if (result.affectedRows === 0) {

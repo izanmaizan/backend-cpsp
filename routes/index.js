@@ -53,7 +53,7 @@ const router = express.Router();
 
 router.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
-router.get("/api/users", getUsers);
+router.get("/users", getUsers);
 router.post("/register", Register);
 router.post("/login", Login);
 router.get("/me", Me);

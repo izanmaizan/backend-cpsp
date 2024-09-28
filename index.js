@@ -4,11 +4,19 @@ import router from "./routes/index.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
+import https from "https";  // Import https module
+import fs from "fs";        // Import fs module untuk membaca file
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Load SSL certificates
+const options = {
+  key: fs.readFileSync("/etc/ssl/private/private.key"),  // Path ke kunci privat
+  cert: fs.readFileSync("/etc/ssl/certs/certificate.crt") // Path ke sertifikat
+};
 
 const start = async function () {
   try {
@@ -49,15 +57,17 @@ app.options("*", cors(corsOptions)); // Preflight requests
 
 app.use(cookieParser());
 app.use(express.json());
-// Hapus fileUpload
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.use(router);
 
+// Start the server with HTTPS
+const server = https.createServer(options, app);
+
 start();
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server berjalan di port ${port}`);
 });
 

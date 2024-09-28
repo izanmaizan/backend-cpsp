@@ -24,6 +24,7 @@ const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
       "http://193.203.162.80",
+      "https://193.203.162.80",
       "http://checkpoint-sig.site",
       "https://checkpoint-sig.site",
       "http://www.checkpoint-sig.site",

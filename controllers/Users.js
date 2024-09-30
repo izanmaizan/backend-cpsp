@@ -49,49 +49,6 @@ export const Register = async (req, res) => {
 };
 
 // ini untuk login
-// export const Login = async (req, res) => {
-//   try {
-//     const user = await User.findOne({
-//       key: "username",
-//       value: req.body.username,
-//     });
-
-//     if (!user) {
-//       return res.status(404).json({ msg: "User not found" });
-//     }
-
-//     const match = await bcrypt.compare(req.body.password, user.password);
-//     if (!match) {
-//       return res.status(400).json({ msg: "Wrong Password" });
-//     }
-
-//     const { id, name, username, role } = user;
-
-//     const accessToken = jwt.sign(
-//       {
-//         userId: id,
-//         name,
-//         username,
-//         role,
-//       },
-//       SECRET_KEY,
-//       {
-//         expiresIn: "1d",
-//       }
-//     );
-
-//     await User.update(id, {
-//       refresh_token: accessToken,
-//     });
-
-//     res.json({ accessToken, role });
-//   } catch (error) {
-//     console.error("Login error:", error);
-//     res
-//       .status(500)
-//       .json({ msg: "Internal server error", error: error.message });
-//   }
-// };
 export const Login = async (req, res) => {
   try {
     const user = await User.findOne({
@@ -127,15 +84,7 @@ export const Login = async (req, res) => {
       refresh_token: accessToken,
     });
 
-    // Set httpOnly cookie with accessToken
-    res.cookie('accessToken', accessToken, {
-      httpOnly: true,  // HTTP-only to prevent JavaScript access
-      secure: process.env.NODE_ENV === 'production',  // Secure only in production
-      sameSite: 'strict',  // Protect against CSRF
-      maxAge: 24 * 60 * 60 * 1000,  // 1 day
-    });
-
-    res.json({ role });
+    res.json({ accessToken, role });
   } catch (error) {
     console.error("Login error:", error);
     res
@@ -143,6 +92,57 @@ export const Login = async (req, res) => {
       .json({ msg: "Internal server error", error: error.message });
   }
 };
+// export const Login = async (req, res) => {
+//   try {
+//     const user = await User.findOne({
+//       key: "username",
+//       value: req.body.username,
+//     });
+
+//     if (!user) {
+//       return res.status(404).json({ msg: "User not found" });
+//     }
+
+//     const match = await bcrypt.compare(req.body.password, user.password);
+//     if (!match) {
+//       return res.status(400).json({ msg: "Wrong Password" });
+//     }
+
+//     const { id, name, username, role } = user;
+
+//     const accessToken = jwt.sign(
+//       {
+//         userId: id,
+//         name,
+//         username,
+//         role,
+//       },
+//       SECRET_KEY,
+//       {
+//         expiresIn: "1d",
+//       }
+//     );
+
+//     await User.update(id, {
+//       refresh_token: accessToken,
+//     });
+
+//     // Set httpOnly cookie with accessToken
+//     res.cookie('accessToken', accessToken, {
+//       httpOnly: true,  // HTTP-only to prevent JavaScript access
+//       secure: process.env.NODE_ENV === 'production',  // Secure only in production
+//       sameSite: 'strict',  // Protect against CSRF
+//       maxAge: 24 * 60 * 60 * 1000,  // 1 day
+//     });
+
+//     res.json({ role });
+//   } catch (error) {
+//     console.error("Login error:", error);
+//     res
+//       .status(500)
+//       .json({ msg: "Internal server error", error: error.message });
+//   }
+// };
 
 
 // ini untuk mendapatkan data pengguna yang sedang login
@@ -167,28 +167,6 @@ export const Me = async (req, res) => {
 };
 
 // ini untuk keluar
-// export const Logout = async (req, res) => {
-//   try {
-//     const authHeader = req.headers["authorization"];
-//     const token = authHeader && authHeader.split(" ")[1];
-//     if (!token) return res.status(204).json({ msg: "No token provided" });
-
-//     const user = await User.findOne({ key: "refresh_token", value: token });
-
-//     if (!user) {
-//       return res
-//         .status(204)
-//         .json({ msg: "User not found or already logged out" });
-//     }
-
-//     await User.update(user.id, { refresh_token: null });
-
-//     res.status(200).json({ msg: "Logout successful" });
-//   } catch (error) {
-//     console.log("Logout error:", error.message);
-//     res.status(500).json({ msg: "Internal server error" });
-//   }
-// };
 export const Logout = async (req, res) => {
   try {
     const authHeader = req.headers["authorization"];
@@ -205,19 +183,41 @@ export const Logout = async (req, res) => {
 
     await User.update(user.id, { refresh_token: null });
 
-    // Clear the accessToken cookie
-    res.clearCookie('accessToken', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-    });
-
     res.status(200).json({ msg: "Logout successful" });
   } catch (error) {
     console.log("Logout error:", error.message);
     res.status(500).json({ msg: "Internal server error" });
   }
 };
+// export const Logout = async (req, res) => {
+//   try {
+//     const authHeader = req.headers["authorization"];
+//     const token = authHeader && authHeader.split(" ")[1];
+//     if (!token) return res.status(204).json({ msg: "No token provided" });
+
+//     const user = await User.findOne({ key: "refresh_token", value: token });
+
+//     if (!user) {
+//       return res
+//         .status(204)
+//         .json({ msg: "User not found or already logged out" });
+//     }
+
+//     await User.update(user.id, { refresh_token: null });
+
+//     // Clear the accessToken cookie
+//     res.clearCookie('accessToken', {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === 'production',
+//       sameSite: 'strict',
+//     });
+
+//     res.status(200).json({ msg: "Logout successful" });
+//   } catch (error) {
+//     console.log("Logout error:", error.message);
+//     res.status(500).json({ msg: "Internal server error" });
+//   }
+// };
 
 
 // Ini untuk update user berdasarkan username

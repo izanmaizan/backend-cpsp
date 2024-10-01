@@ -48,6 +48,7 @@ export const Register = async (req, res) => {
   }
 };
 
+// ini untuk login test dahulu
 // ini untuk login
 export const Login = async (req, res) => {
   try {
@@ -67,31 +68,39 @@ export const Login = async (req, res) => {
 
     const { id, name, username, role } = user;
 
+    // Buat access token dan refresh token
     const accessToken = jwt.sign(
-      {
-        userId: id,
-        name,
-        username,
-        role,
-      },
+      { userId: id, name, username, role },
       SECRET_KEY,
-      {
-        expiresIn: "1d",
-      }
+      { expiresIn: "15m" } // Access token berfungsi selama 15 menit
     );
 
-    await User.update(id, {
-      refresh_token: accessToken,
+    const refreshToken = jwt.sign(
+      { userId: id },
+      SECRET_KEY,
+      { expiresIn: "7d" } // Refresh token berfungsi selama 7 hari
+    );
+
+    // Simpan refresh token ke dalam database
+    await User.update(id, { refresh_token: refreshToken });
+
+    // Set cookie dengan httpOnly
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true, // Tidak bisa diakses oleh JavaScript
+      secure: true,   // Hanya untuk HTTPS
+      sameSite: "Strict", // Mencegah CSRF
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 hari
     });
 
+    // Kirim access token ke client
     res.json({ accessToken, role });
   } catch (error) {
     console.error("Login error:", error);
-    res
-      .status(500)
-      .json({ msg: "Internal server error", error: error.message });
+    res.status(500).json({ msg: "Internal server error", error: error.message });
   }
 };
+
+// ini untuk login yang valid
 // export const Login = async (req, res) => {
 //   try {
 //     const user = await User.findOne({
@@ -127,15 +136,7 @@ export const Login = async (req, res) => {
 //       refresh_token: accessToken,
 //     });
 
-//     // Set httpOnly cookie with accessToken
-//     res.cookie('accessToken', accessToken, {
-//       httpOnly: true,  // HTTP-only to prevent JavaScript access
-//       secure: process.env.NODE_ENV === 'production',  // Secure only in production
-//       sameSite: 'strict',  // Protect against CSRF
-//       maxAge: 24 * 60 * 60 * 1000,  // 1 day
-//     });
-
-//     res.json({ role });
+//     res.json({ accessToken, role });
 //   } catch (error) {
 //     console.error("Login error:", error);
 //     res
@@ -144,21 +145,11 @@ export const Login = async (req, res) => {
 //   }
 // };
 
-
-// ini untuk mendapatkan data pengguna yang sedang login
+// ini untuk mendapatkan data pengguna yang sedang login masih test
 export const Me = async (req, res) => {
   try {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
-    if (!token) return res.status(401).json({ msg: "Unauthorized" });
-
-    const decoded = jwt.verify(token, SECRET_KEY);
-
-    const user = await User.findOne({
-      key: "id",
-      value: decoded.userId,
-    });
-
+    const userId = req.user.userId; // Ambil userId dari decoded token
+    const user = await User.findOne({ key: "id", value: userId });
     res.json(user);
   } catch (error) {
     console.log(error.message);
@@ -166,9 +157,34 @@ export const Me = async (req, res) => {
   }
 };
 
-// ini untuk keluar
+
+// ini untuk mendapatkan data pengguna yang sedang login valid
+// export const Me = async (req, res) => {
+//   try {
+//     const authHeader = req.headers["authorization"];
+//     const token = authHeader && authHeader.split(" ")[1];
+//     if (!token) return res.status(401).json({ msg: "Unauthorized" });
+
+//     const decoded = jwt.verify(token, SECRET_KEY);
+
+//     const user = await User.findOne({
+//       key: "id",
+//       value: decoded.userId,
+//     });
+
+//     res.json(user);
+//   } catch (error) {
+//     console.log(error.message);
+//     res.status(500).send("Internal server error");
+//   }
+// };
+
+
+
+// ini untuk keluar ini masih test
 export const Logout = async (req, res) => {
   try {
+    res.clearCookie("refreshToken"); // Hapus cookie refresh token
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
     if (!token) return res.status(204).json({ msg: "No token provided" });
@@ -176,9 +192,7 @@ export const Logout = async (req, res) => {
     const user = await User.findOne({ key: "refresh_token", value: token });
 
     if (!user) {
-      return res
-        .status(204)
-        .json({ msg: "User not found or already logged out" });
+      return res.status(204).json({ msg: "User not found or already logged out" });
     }
 
     await User.update(user.id, { refresh_token: null });
@@ -189,6 +203,8 @@ export const Logout = async (req, res) => {
     res.status(500).json({ msg: "Internal server error" });
   }
 };
+
+// ini untuk keluar yang valid
 // export const Logout = async (req, res) => {
 //   try {
 //     const authHeader = req.headers["authorization"];
@@ -205,22 +221,14 @@ export const Logout = async (req, res) => {
 
 //     await User.update(user.id, { refresh_token: null });
 
-//     // Clear the accessToken cookie
-//     res.clearCookie('accessToken', {
-//       httpOnly: true,
-//       secure: process.env.NODE_ENV === 'production',
-//       sameSite: 'strict',
-//     });
-
 //     res.status(200).json({ msg: "Logout successful" });
 //   } catch (error) {
 //     console.log("Logout error:", error.message);
 //     res.status(500).json({ msg: "Internal server error" });
 //   }
-// };
+};
 
 
-// Ini untuk update user berdasarkan username
 export const updateAkun = async (req, res) => {
   try {
     const { username } = req.params; // Menggunakan username alih-alih id
@@ -282,3 +290,26 @@ export const deleteUserByUsername = async (req, res) => {
       .json({ msg: "Internal server error", error: error.message });
   }
 };
+
+// endpoint yang memungkinkan pengguna untuk mendapatkan access token baru menggunakan refresh token
+export const RefreshToken = async (req, res) => {
+  const token = req.cookies.refreshToken; // Ambil token dari cookie
+  if (!token) return res.sendStatus(401); // Jika tidak ada token, berikan 401 Unauthorized
+
+  jwt.verify(token, SECRET_KEY, async (err, decoded) => {
+    if (err) return res.sendStatus(403); // Jika token tidak valid, berikan 403 Forbidden
+
+    const user = await User.findOne({ key: "id", value: decoded.userId });
+    if (!user || user.refresh_token !== token) return res.sendStatus(403); // Cek apakah user ada dan token cocok
+
+    // Buat access token baru
+    const accessToken = jwt.sign(
+      { userId: user.id, name: user.name, username: user.username, role: user.role },
+      SECRET_KEY,
+      { expiresIn: "15m" }
+    );
+
+    res.json({ accessToken });
+  });
+};
+

@@ -42,6 +42,11 @@ export const createCheckPoint = async (req, res) => {
       ekspeditur,
     } = req.body;
     const dokumentasi = req.files ? req.files.map((file) => file.path) : [];
+    // ini test
+    if (!req.files) {
+      return res.status(400).json({ msg: "No files were uploaded" });
+    }
+    
 
     // ini test
     try {

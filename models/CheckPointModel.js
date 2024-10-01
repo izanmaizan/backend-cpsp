@@ -57,7 +57,7 @@ class CheckPoint {
         nama_pengemudi = ?,
         no_truck = ?,
         distributor = ?,
-        ekspeditur = ?,
+        ekspeditur = ?
       WHERE no_do = ?
     `;
     const [result] = await db.execute(sql, [

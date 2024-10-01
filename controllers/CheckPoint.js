@@ -2,6 +2,9 @@
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 import CheckPoint from "../models/CheckPointModel.js";
+//ini test
+import uploadFile from "../middleware/ftpUpload.js"; // Pastikan path ini benar
+import path from "path"; // Impor path untuk memanipulasi file path
 
 // Konfigurasi multer
 const storage = multer.diskStorage({
@@ -40,11 +43,27 @@ export const createCheckPoint = async (req, res) => {
     } = req.body;
     const dokumentasi = req.files ? req.files.map((file) => file.path) : [];
 
+    // ini test
     try {
+      // Upload each file to FTP server
+      const uploadPromises = dokumentasi.map(async (filePath) => {
+        const remoteFileName = path.basename(filePath); // Ambil nama file
+        return uploadFile(filePath, remoteFileName); // Upload file
+      });
+
+      await Promise.all(uploadPromises); // Tunggu semua upload selesai
+
       const checkPointExists = await CheckPoint.findOne({
         key: "no_do",
         value: no_do,
       });
+
+    //ini yang asli
+    // try {
+    //   const checkPointExists = await CheckPoint.findOne({
+    //     key: "no_do",
+    //     value: no_do,
+    //   });
 
       if (checkPointExists) {
         return res

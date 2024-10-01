@@ -48,11 +48,6 @@ import {
   updateGeofence,
   deleteGeofence,
 } from "../controllers/GeofenceController.js";
-import cookieParser from "cookie-parser";
-
-// Setelah inisialisasi Express
-app.use(cookieParser());
-
 
 const router = express.Router();
 

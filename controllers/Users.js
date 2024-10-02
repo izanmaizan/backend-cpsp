@@ -93,15 +93,18 @@ export const Login = async (req, res) => {
   }
 };
 
-
-
-// ini untuk mendapatkan data pengguna yang sedang login pengembangan
 // ini untuk mendapatkan data pengguna yang sedang login
 export const Me = async (req, res) => {
   try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    if (!token) return res.status(401).json({ msg: "Unauthorized" });
+
+    const decoded = jwt.verify(token, SECRET_KEY);
+
     const user = await User.findOne({
       key: "id",
-      value: req.user.userId, // Menggunakan req.user dari middleware verifyToken
+      value: decoded.userId,
     });
 
     res.json(user);
@@ -110,47 +113,6 @@ export const Me = async (req, res) => {
     res.status(500).send("Internal server error");
   }
 };
-
-// ini untuk keluar
-export const Logout = async (req, res) => {
-  try {
-    const user = await User.findOne({ key: "refresh_token", value: req.user.refresh_token });
-
-    if (!user) {
-      return res
-        .status(204)
-        .json({ msg: "User not found or already logged out" });
-    }
-
-    await User.update(user.id, { refresh_token: null });
-
-    res.status(200).json({ msg: "Logout successful" });
-  } catch (error) {
-    console.log("Logout error:", error.message);
-    res.status(500).json({ msg: "Internal server error" });
-  }
-};
-
-// ini untuk mendapatkan data pengguna yang sedang login valid
-// export const Me = async (req, res) => {
-//   try {
-//     const authHeader = req.headers["authorization"];
-//     const token = authHeader && authHeader.split(" ")[1];
-//     if (!token) return res.status(401).json({ msg: "Unauthorized" });
-
-//     const decoded = jwt.verify(token, SECRET_KEY);
-
-//     const user = await User.findOne({
-//       key: "id",
-//       value: decoded.userId,
-//     });
-
-//     res.json(user);
-//   } catch (error) {
-//     console.log(error.message);
-//     res.status(500).send("Internal server error");
-//   }
-// };
 
 // ini untuk keluar
 export const Logout = async (req, res) => {

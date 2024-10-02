@@ -14,7 +14,6 @@ import {
   updateAkun,
   deleteUserByUsername,
 } from "../controllers/Users.js";
-import { verifyToken } from "../middleware/VerifyToken.js";
 import {
   createCheckPoint,
   deleteCheckPoint,
@@ -54,14 +53,13 @@ const router = express.Router();
 
 router.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
-// Rute-rute yang memerlukan otorisasi dengan verifyToken
-router.get("/users", verifyToken, getUsers);
-router.post("/login", Login);
-router.get("/me", verifyToken, Me);
+router.get("/users", getUsers);
 router.post("/register", Register);
-router.post("/logout", verifyToken, Logout);
-router.put("/update-akun/:username", verifyToken, updateAkun);
-router.delete("/delete-user/:username", verifyToken, deleteUserByUsername);
+router.post("/login", Login);
+router.get("/me", Me);
+router.post("/logout", Logout);
+router.put("/update-akun/:username", updateAkun);
+router.delete("/delete-user/:username", deleteUserByUsername);
 
 router.get("/checkpoints", getCheckPoints);
 router.post("/checkpoints", createCheckPoint);

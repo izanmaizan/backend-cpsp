@@ -48,14 +48,28 @@ import {
   updateGeofence,
   deleteGeofence,
 } from "../controllers/GeofenceController.js";
+import rateLimit from "express-rate-limit";
 
 const router = express.Router();
 
 router.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
+// Create a rate limiter for login and registration
+const loginRegisterLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per windowMs for login and registration
+  message: "Too many login/register attempts from this IP, please try again later.", // Message returned when limit is reached
+});
+
+
+
+// Apply the rate limiter to login and register routes
+router.post("/register", loginRegisterLimiter, Register);
+router.post("/login", loginRegisterLimiter, Login);
+
 router.get("/users", getUsers);
-router.post("/register", Register);
-router.post("/login", Login);
+// router.post("/register", Register);
+// router.post("/login", Login);
 router.get("/me", Me);
 router.post("/logout", Logout);
 router.put("/update-akun/:username", updateAkun);

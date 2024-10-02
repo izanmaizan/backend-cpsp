@@ -23,6 +23,9 @@ export const createCheckPoint = async (req, res) => {
       return res.status(400).json({ msg: "Error uploading files" });
     }
 
+    console.log("Request body:", req.body);
+    console.log("Uploaded files:", req.files);
+
     const {
       nama_petugas,
       no_hp,

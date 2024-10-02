@@ -48,7 +48,6 @@ import {
   updateGeofence,
   deleteGeofence,
 } from "../controllers/GeofenceController.js";
-import rateLimit from "express-rate-limit";
 
 const router = express.Router();
 

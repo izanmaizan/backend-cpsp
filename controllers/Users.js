@@ -87,12 +87,13 @@ export const Login = async (req, res) => {
     // Set cookie httpOnly
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Set secure to true in production
+      secure: true, // Set secure to true in production
+      // secure: process.env.NODE_ENV === 'production', // Set secure to true in production
       sameSite: 'Strict', // Mencegah pengiriman cookie dalam permintaan cross-site
       maxAge: 24 * 60 * 60 * 1000 // Cookie berlaku selama 1 hari
     });
 
-    res.json({ role });
+    res.json({ accessToken, role });
   } catch (error) {
     console.error("Login error:", error);
     res

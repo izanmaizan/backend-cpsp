@@ -38,15 +38,16 @@ export const Register = async (req, res) => {
       username,
       password: hashPassword,
       name,
-      role: role || "petugas", // Default to "user" if not provided
+      role: role || "petugas",
     });
 
     res.json({ msg: "Berhasil mendaftar" });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ msg: "Internal server error" });
+    console.error("Error saving user:", error); // Detailed error log
+    res.status(500).json({ msg: "Internal server error", error: error.message });
   }
 };
+
 
 // ini untuk login
 export const Login = async (req, res) => {

@@ -6,7 +6,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import https from "https";  // Import https module
 import fs from "fs";        // Import fs module untuk membaca file
-import rateLimit from "express-rate-limit";
 
 dotenv.config();
 
@@ -18,16 +17,6 @@ const options = {
   key: fs.readFileSync("/etc/ssl/private/private.key"),  // Path ke kunci privat
   cert: fs.readFileSync("/etc/ssl/certs/certificate.crt") // Path ke sertifikat
 };
-
-// Create a global rate limiter
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  message: "Too many requests from this IP, please try again later.", // Message returned when limit is reached
-});
-
-// Apply the global rate limiter to all requests
-app.use(globalLimiter);
 
 const start = async function () {
   try {

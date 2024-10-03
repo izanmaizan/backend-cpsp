@@ -104,8 +104,8 @@ export const createCheckPoint = async (req, res) => {
         .status(201)
         .json({ msg: "Checkpoint created successfully", id: newCheckPointId });
     } catch (error) {
-      console.error("Error creating checkpoint:", error);
-      res.status(500).json({ msg: "Internal server error" });
+      console.error("Error creating checkpoint:", error); // Menampilkan detail kesalahan di konsol
+      res.status(500).json({ msg: "Internal server error", error: error.message }); // Mengirim pesan kesalahan ke klien
     }
   });
 };

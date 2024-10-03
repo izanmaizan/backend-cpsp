@@ -15,13 +15,33 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
+// File filter to validate file types (allow images and videos)
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ["image/jpeg", "image/png", "video/mp4"];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Invalid file type. Only JPEG, PNG, and MP4 are allowed."));
+  }
+};
 
-// Create a new checkpoint
+// Limit file size to 100MB
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB limit per file
+  fileFilter: fileFilter,
+});
+
+// Create a new checkpoint with file uploads
 export const createCheckPoint = async (req, res) => {
-  upload.array("dokumentasi")(req, res, async (err) => {
-    if (err) {
-      return res.status(400).json({ msg: "Error uploading files" });
+  // Set max files to 10
+  upload.array("dokumentasi", 10)(req, res, async (err) => {
+    if (err instanceof multer.MulterError) {
+      // Multer-specific errors
+      return res.status(400).json({ msg: "Multer error: " + err.message });
+    } else if (err) {
+      // General errors
+      return res.status(400).json({ msg: "File upload error: " + err.message });
     }
 
     console.log("Request body:", req.body);
@@ -65,7 +85,7 @@ export const createCheckPoint = async (req, res) => {
 
       const newCheckPointId = await CheckPoint.create({
         nama_petugas: petugasString,
-        no_hp: noHpString, // Ensure no_hp is saved
+        no_hp: noHpString,
         titik_lokasi,
         no_do,
         tanggal,

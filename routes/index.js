@@ -82,7 +82,7 @@ router.put("/titiklokasi/:id_lokasi", updateTitikLokasi);
 router.delete("/titiklokasi/:id_lokasi", deleteTitikLokasi);
 
 // Lokasi routes
-router.get("/lokasi-with-details", getLokasiWithPetugasDanGeofence);
+router.get("/lokasi-with-details", getLokasiWithPetugas);
 
 // Petugas Routes
 router.post("/petugas", createPetugas);

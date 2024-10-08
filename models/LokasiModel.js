@@ -2,8 +2,8 @@ import db from "../config/Database.js";
 
 class Lokasi {
   static async create(data) {
-    const sql = "INSERT INTO lokasi (id_lokasi, lokasi) VALUES (?, ?)";
-    const params = [data.id_lokasi, data.lokasi];
+    const sql = "INSERT INTO lokasi (lokasi) VALUES (?)";
+    const params = [data.lokasi];
     return db.execute(sql, params);
   }
 

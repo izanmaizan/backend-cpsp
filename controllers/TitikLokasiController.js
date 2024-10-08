@@ -16,21 +16,25 @@ export const getTitikLokasi = async (req, res) => {
 
 // Create a new location
 export const createTitikLokasi = async (req, res) => {
-  const { id_lokasi, lokasi } = req.body;
+  const { lokasi } = req.body;
 
-  if (!id_lokasi || !lokasi) {
-    return res.status(400).json({ msg: "All fields are required" });
+  if (!lokasi) {
+    return res.status(400).json({ msg: "Location field is required" });
   }
 
   try {
-    await Lokasi.create({ id_lokasi, lokasi });
-    res.status(201).json({ msg: "Lokasi created successfully" });
+    // Generate id_lokasi otomatis (misalnya UUID atau bisa juga ID auto increment dari database)
+    const generatedIdLokasi = `LOC-${Date.now()}`; // Contoh simple ID generator
+    
+    await Lokasi.create({ id_lokasi: generatedIdLokasi, lokasi });
+    res.status(201).json({ msg: "Lokasi created successfully", id_lokasi: generatedIdLokasi });
   } catch (error) {
     res
       .status(500)
       .json({ msg: "Internal server error", error: error.message });
   }
 };
+
 
 // Get location by ID
 export const getTitikLokasiById = async (req, res) => {

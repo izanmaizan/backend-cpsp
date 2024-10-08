@@ -8,7 +8,7 @@ export const getLaporan = async () => {
       SELECT 
           cp.no_do,
           cp.nama_petugas,
-          l.lokasi AS titik_lokasi,
+          l.lokasi AS lokasi,
           cp.tanggal,
           cp.jam,
           cp.dokumentasi,

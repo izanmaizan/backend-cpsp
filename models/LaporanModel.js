@@ -25,7 +25,7 @@ export const getLaporan = async () => {
     cp.tanggal,
     cp.jam
 FROM check_points cp
-LEFT JOIN lokasi l ON cp.titik_lokasi = l.id_lokasi
+LEFT JOIN lokasi l ON cp.titik_lokasi = l.lokasi
     `;
 
     const [rows] = await db.execute(sql);

@@ -28,19 +28,32 @@ export const createPetugas = async (req, res) => {
   const results = [];
 
   for (const petugas of petugasArray) {
-    const { id_petugas, nama_petugas, no_hp, id_lokasi } = petugas;
+    const { nama_petugas, no_hp, id_lokasi } = petugas;
 
-    if (!id_petugas || !nama_petugas || !no_hp || !id_lokasi) {
-      errors.push(`Missing fields for petugas with id ${id_petugas}`);
+    if (!nama_petugas || !no_hp || !id_lokasi) {
+      errors.push(`Missing fields for petugas with nama ${nama_petugas}`);
       continue; // Skip this item and continue with the next
     }
 
     try {
-      await Petugas.create({ id_petugas, nama_petugas, no_hp, id_lokasi });
-      results.push({ id_petugas, status: "created" });
+      // Ambil id_petugas terakhir untuk menghasilkan ID baru
+      const [result] = await Petugas.findLastId(); // Ambil ID terakhir
+      let newId;
+
+      if (result.length > 0) {
+        const lastId = result[0].id_petugas; // ID terakhir
+        const numericPart = parseInt(lastId.slice(3), 10); // Ambil bagian angka
+        newId = `IDP${String(numericPart + 1).padStart(3, '0')}`; // Buat ID baru
+      } else {
+        newId = "IDP001"; // Jika tidak ada data, mulai dari IDP001
+      }
+
+      // Simpan data petugas baru
+      await Petugas.create({ id_petugas: newId, nama_petugas, no_hp, id_lokasi });
+      results.push({ id_petugas: newId, status: "created" });
     } catch (error) {
       errors.push(
-        `Failed to create petugas with id ${id_petugas}: ${error.message}`
+        `Failed to create petugas with nama ${nama_petugas}: ${error.message}`
       );
     }
   }

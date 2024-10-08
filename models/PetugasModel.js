@@ -40,6 +40,13 @@ class Petugas {
     const sql = "DELETE FROM petugas WHERE id_petugas = ?";
     return db.execute(sql, [id_petugas]);
   }
+
+
+  // Tambahkan metode ini
+  static async findLastId() {
+    const sql = "SELECT id_petugas FROM petugas ORDER BY id_petugas DESC LIMIT 1";
+    return db.execute(sql);
+  }
 }
 
 export default Petugas;

@@ -1,5 +1,5 @@
 // Laporan.js di folder controllers
-import { getLaporan as fetchLaporan } from "../models/LaporanModel.js"; // Mengimpor getLaporan dengan nama alias
+import { getLaporan as fetchLaporan } from "../models/LaporanModel.js";
 
 // Fungsi untuk memformat tanggal
 const formatTanggal = (tanggal) => {
@@ -11,9 +11,10 @@ const formatTanggal = (tanggal) => {
 };
 
 export const getLaporan = async (req, res) => {
+  const { selectedLocation } = req.query; // Ambil parameter lokasi dari query
+
   try {
-    const laporan = await fetchLaporan(); // Memanggil fungsi model untuk mendapatkan data
-    console.log("Laporan fetched successfully: ", laporan); // Log laporan yang diambil
+    const laporan = await fetchLaporan(selectedLocation); // Pass lokasi ke model
 
     // Format tanggal untuk setiap item dalam laporan
     const laporanFormatted = laporan.map((item) => {
@@ -29,4 +30,3 @@ export const getLaporan = async (req, res) => {
     res.status(500).json({ msg: "Internal server error" });
   }
 };
-

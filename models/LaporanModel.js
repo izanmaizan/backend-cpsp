@@ -8,7 +8,7 @@ export const getLaporan = async () => {
       SELECT 
           cp.no_do,
           cp.nama_petugas,
-          l.lokasi AS lokasi,
+          l.lokasi AS titik_lokasi,
           cp.tanggal,
           cp.jam,
           cp.dokumentasi,
@@ -21,7 +21,7 @@ export const getLaporan = async () => {
           cp.distributor,
           cp.ekspeditur
       FROM check_points cp
-      JOIN lokasi l ON cp.titik_lokasi = l.id_lokasi
+      JOIN lokasi l ON cp.titik_lokasi = l.lokasi
     `;
 
     const [rows] = await db.execute(sql);

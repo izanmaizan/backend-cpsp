@@ -5,7 +5,7 @@ import db from "../config/Database.js";
 export const getLaporan = async () => {
   try {
     const sql = `SELECT 
-    p.nama_petugas AS petugas,
+    cp.nama_petugas,
     l.lokasi AS lokasi,
     cp.no_do,
     cp.no_truck,
@@ -16,9 +16,8 @@ export const getLaporan = async () => {
     cp.jam
 FROM check_points cp
 LEFT JOIN lokasi l ON cp.titik_lokasi = l.id_lokasi
-LEFT JOIN petugas p ON cp.nama_petugas = p.id_petugas
-
-    `;
+`;
+// LEFT JOIN petugas p ON cp.nama_petugas = p.id_petugas
 
     const [rows] = await db.execute(sql);
     return rows; // Mengembalikan hasil query

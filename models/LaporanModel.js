@@ -21,7 +21,7 @@ export const getLaporan = async () => {
           cp.distributor,
           cp.ekspeditur
       FROM check_points cp
-      JOIN lokasi l ON cp.titik_lokasi = l.lokasi
+      JOIN lokasi l ON cp.titik_lokasi = l.id_lokasi
     `;
 
     const [rows] = await db.execute(sql);

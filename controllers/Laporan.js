@@ -12,19 +12,19 @@ const formatTanggal = (tanggal) => {
 
 export const getLaporan = async (req, res) => {
   try {
-    const laporan = await fetchLaporan(); // Memanggil fungsi model untuk mendapatkan data
+      const laporan = await fetchLaporan(); // Memanggil fungsi model untuk mendapatkan data
 
-    // Format tanggal untuk setiap item dalam laporan
-    const laporanFormatted = laporan.map((item) => {
-      return {
-        ...item,
-        tanggal: formatTanggal(item.tanggal), // Memformat tanggal
-      };
-    });
+      // Format tanggal untuk setiap item dalam laporan
+      const laporanFormatted = laporan.map((item) => {
+          return {
+              ...item,
+              tanggal: formatTanggal(item.tanggal), // Memformat tanggal
+          };
+      });
 
-    res.json(laporanFormatted); // Kirim hasil yang telah diformat ke klien
+      res.json(laporanFormatted); // Kirim hasil yang telah diformat ke klien
   } catch (error) {
-    console.error("Error fetching laporan: ", error);
-    res.status(500).json({ msg: "Internal server error" });
+      console.error("Error fetching laporan: ", error); // Cetak kesalahan di konsol
+      res.status(500).json({ msg: "Internal server error", error: error.message }); // Sertakan pesan kesalahan
   }
 };

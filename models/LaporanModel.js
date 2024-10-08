@@ -1,35 +1,30 @@
 // LaporanModel.js di folder models
 import db from "../config/Database.js";
 
-// Fungsi untuk mengambil data laporan dari check_points dan titik_lokasi
+// Fungsi untuk mengambil data laporan dari check_points
 export const getLaporan = async () => {
   try {
-    // const sql = `
-    //   SELECT
-    //     cp.nama_petugas AS petugas,
-    //     tl.lokasi AS lokasi,
-    //     cp.no_do,
-    //     cp.tanggal,
-    //     cp.jam
-    //   FROM check_points cp
-    //   LEFT JOIN titik_lokasi tl ON cp.titik_lokasi = tl.lokasi
-    // `;
-    const sql = `SELECT 
-    cp.nama_petugas AS petugas,
-    l.lokasi AS lokasi,
-    cp.no_do,
-    cp.no_truck,
-    cp.nama_pengemudi,
-    cp.distributor,
-    cp.ekspeditur,
-    cp.tanggal,
-    cp.jam
-FROM check_points cp
-LEFT JOIN lokasi l ON cp.titik_lokasi = l.lokasi
+    const sql = `
+      SELECT 
+          no_do,
+          nama_petugas,
+          titik_lokasi,
+          tanggal,
+          jam,
+          dokumentasi,
+          keterangan,
+          no_hp,
+          geofence_data,
+          alamat,
+          nama_pengemudi,
+          no_truck,
+          distributor,
+          ekspeditur
+      FROM check_points
     `;
 
     const [rows] = await db.execute(sql);
-    return rows; // Kembalikan hasil query sebagai return
+    return rows; // Mengembalikan hasil query
   } catch (error) {
     console.error("Error fetching laporan: ", error);
     throw error; // Lemparkan error agar bisa ditangani di controller

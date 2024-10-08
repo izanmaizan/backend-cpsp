@@ -25,6 +25,6 @@ export const getLaporan = async (req, res) => {
     res.json(laporanFormatted); // Kirim hasil yang telah diformat ke klien
   } catch (error) {
     console.error("Error fetching laporan: ", error);
-    res.status(500).json({ msg: "Server eror pada sisi internal" });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };

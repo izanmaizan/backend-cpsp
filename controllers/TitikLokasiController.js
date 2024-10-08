@@ -98,10 +98,8 @@ export const deleteTitikLokasi = async (req, res) => {
   }
 };
 
-
-
-// Get locations with petugas
-export const getLokasiWithPetugas = async (req, res) => {
+// Get locations with petugas and geofence
+export const getLokasiWithPetugasDanGeofence = async (req, res) => {
   try {
     const [lokasi] = await Lokasi.findAll();
     const lokasiWithDetails = [];
@@ -110,9 +108,13 @@ export const getLokasiWithPetugas = async (req, res) => {
       // Fetch petugas for each location
       const [petugas] = await Petugas.findByLokasi(loc.id_lokasi);
 
+      // Fetch geofence for each location
+      const geofence = await Geofence.findByLokasiId(loc.id_lokasi); // Adjusted method
+
       lokasiWithDetails.push({
         ...loc,
         petugas: petugas,
+        geofence: geofence.length > 0 ? geofence[0] : null,
       });
     }
 

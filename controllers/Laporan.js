@@ -13,6 +13,7 @@ const formatTanggal = (tanggal) => {
 export const getLaporan = async (req, res) => {
   try {
     const laporan = await fetchLaporan(); // Memanggil fungsi model untuk mendapatkan data
+    console.log("Laporan fetched successfully: ", laporan); // Log laporan yang diambil
 
     // Format tanggal untuk setiap item dalam laporan
     const laporanFormatted = laporan.map((item) => {
@@ -28,3 +29,4 @@ export const getLaporan = async (req, res) => {
     res.status(500).json({ msg: "Internal server error" });
   }
 };
+

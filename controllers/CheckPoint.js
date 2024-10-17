@@ -61,6 +61,7 @@ export const createCheckPoint = async (req, res) => {
       no_truck,
       distributor,
       ekspeditur,
+      name,
     } = req.body;
 
     const dokumentasi = req.files ? req.files.map((file) => file.path) : [];
@@ -98,6 +99,7 @@ export const createCheckPoint = async (req, res) => {
         no_truck,
         distributor,
         ekspeditur,
+        name,
       });
 
       res

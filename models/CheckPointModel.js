@@ -4,8 +4,8 @@ import db from "../config/Database.js";
 class CheckPoint {
   static async create(data) {
     const sql = `
-      INSERT INTO check_points (no_do, nama_petugas, no_hp, titik_lokasi, tanggal, jam, dokumentasi, keterangan, geofence_data, alamat, nama_pengemudi, no_truck, distributor, ekspeditur) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO check_points (no_do, nama_petugas, no_hp, titik_lokasi, tanggal, jam, dokumentasi, keterangan, geofence_data, alamat, nama_pengemudi, no_truck, distributor, ekspeditur, name) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const [result] = await db.execute(sql, [
       data.no_do || null,
@@ -22,6 +22,7 @@ class CheckPoint {
       data.no_truck || null,
       data.distributor || null,
       data.ekspeditur || null,
+      data.name || null,
     ]);
     return result.insertId;
   }

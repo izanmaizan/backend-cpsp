@@ -12,6 +12,7 @@ const formatTanggal = (tanggal) => {
 
 export const getLaporan = async (req, res) => {
   try {
+      const { lokasi, tanggal } = req.query; // Ambil params dari URL
       const laporan = await fetchLaporan(); // Memanggil fungsi model untuk mendapatkan data
 
       // Format tanggal untuk setiap item dalam laporan

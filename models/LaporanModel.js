@@ -7,7 +7,7 @@ export const getLaporan = async () => {
     const sql = `
 SELECT 
     cp.nama_petugas AS petugas,
-    l.lokasi AS lokasi,
+    l.lokasi,
     cp.no_do,
     cp.no_truck,
     cp.nama_pengemudi,
